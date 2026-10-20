@@ -1,1 +1,311 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة إدارة مجموعات القانون</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f5f8;
+      margin: 0;
+      padding: 20px;
+      color: #172033;
+    }
+    main {
+      max-width: 850px;
+      margin: 25px auto;
+    }
+    section {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 14px #0000000d;
+    }
+    h1, h2 { color: #183b66; }
+    input, select, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0;
+      border-radius: 8px;
+      border: 1px solid #ccd3dd;
+      font-size: 16px;
+    }
+    button {
+      background: #183b66;
+      color: white;
+      border: 0;
+      cursor: pointer;
+    }
+    button.danger { background: #a32929; }
+    button.secondary { background: #526174; }
+    .student {
+      border: 1px solid #e0e5ec;
+      border-radius: 10px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+    .student strong { display: block; margin-bottom: 5px; }
+    #status { white-space: pre-wrap; }
+    .hidden { display: none; }
+    .muted { color: #596579; font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>لوحة إدارة مجموعات القانون</h1>
+
+  <section id="login">
+    <h2>دخول المدير</h2>
+    <label for="username">اسم المستخدم</label>
+    <input id="username" autocomplete="username"
+           value="mont" placeholder="اسم المستخدم">
+    <label for="password">كلمة المرور</label>
+    <input id="password" type="password"
+           autocomplete="current-password"
+           placeholder="أدخل كلمة المرور">
+    <button id="loginBtn">تسجيل الدخول</button>
+    <p class="muted">لا تشارك كلمة المرور مع أي شخص.</p>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <h2>إدارة الطلاب</h2>
+    <button id="refreshBtn">تحديث قائمة الطلاب</button>
+    <button id="logoutBtn" class="secondary">تسجيل الخروج</button>
+    <label for="filterGroup">عرض مجموعة محددة</label>
+    <select id="filterGroup">
+      <option value="all">كل المجموعات</option>
+      <option value="1">المجموعة 1</option>
+      <option value="2">المجموعة 2</option>
+      <option value="3">المجموعة 3</option>
+      <option value="4">المجموعة 4</option>
+      <option value="5">المجموعة 5</option>
+      <option value="6">المجموعة 6</option>
+    </select>
+    <div id="students"></div>
+  </section>
+
+  <section>
+    <p id="status" role="status">سجّل الدخول للمتابعة.</p>
+  </section>
+</main>
+
+<script>
+const SUPABASE_URL = "https://kghozkcccdkdfwbxhnsd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_6NRWvOPBpLb3TQsyv1YC7g_wMhByzE6";
+const ADMIN_EMAIL = "bhbh3636fg@gmail.com";
+
+let accessToken = null;
+let studentRows = [];
+
+const $ = id => document.getElementById(id);
+const status = message => { $("status").textContent = message; };
+
+async function api(path, options = {}) {
+  const response = await fetch(SUPABASE_URL + path, {
+    ...options,
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + (accessToken || SUPABASE_KEY),
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+
+  const body = await response.text();
+  let data = null;
+  try { data = body ? JSON.parse(body) : null; }
+  catch { data = body; }
+
+  if (!response.ok) {
+    throw new Error(
+      typeof data === "object" && data
+        ? (data.message || data.msg || data.error_description || JSON.stringify(data))
+        : (data || "حدث خطأ في الطلب")
+    );
+  }
+  return data;
+}
+
+$("loginBtn").addEventListener("click", async () => {
+  const username = $("username").value.trim();
+  const password = $("password").value;
+
+  if (username !== "mont") {
+    status("اسم المستخدم غير صحيح.");
+    return;
+  }
+  if (!password) {
+    status("أدخل كلمة المرور.");
+    return;
+  }
+
+  $("loginBtn").disabled = true;
+  status("جارٍ التحقق من بيانات الدخول...");
+
+  try {
+    const response = await fetch(
+      SUPABASE_URL + "/auth/v1/token?grant_type=password",
+      {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: ADMIN_EMAIL,
+          password: password
+        })
+      }
+    );
+
+    const result = await response.json();
+    if (!response.ok || !result.access_token) {
+      throw new Error("تعذر تسجيل الدخول. تحقق من كلمة المرور وحالة الحساب.");
+    }
+
+    accessToken = result.access_token;
+    $("password").value = "";
+    $("login").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    status("تم تسجيل الدخول. جارٍ تحميل الطلاب...");
+    await loadStudents();
+  } catch (error) {
+    accessToken = null;
+    status("فشل تسجيل الدخول: " + error.message);
+  } finally {
+    $("loginBtn").disabled = false;
+  }
+});
+
+async function loadStudents() {
+  try {
+    studentRows = await api(
+      "/rest/v1/student_members?select=id,group_no,student_name,created_at&order=group_no.asc,created_at.asc"
+    );
+    renderStudents();
+    status("تم تحميل " + studentRows.length + " طالب.");
+  } catch (error) {
+    status("تعذر تحميل الطلاب: " + error.message);
+  }
+}
+
+function renderStudents() {
+  const list = $("students");
+  list.replaceChildren();
+
+  const filter = $("filterGroup").value;
+  const rows = studentRows.filter(student =>
+    filter === "all" || String(student.group_no) === filter
+  );
+
+  if (!rows.length) {
+    list.textContent = "لا توجد أسماء لعرضها.";
+    return;
+  }
+
+  for (const student of rows) {
+    const card = document.createElement("div");
+    card.className = "student";
+
+    const heading = document.createElement("strong");
+    heading.textContent =
+      student.student_name + " — المجموعة " + student.group_no;
+    card.appendChild(heading);
+
+    const nameInput = document.createElement("input");
+    nameInput.value = student.student_name;
+    nameInput.setAttribute("aria-label", "اسم الطالب");
+    card.appendChild(nameInput);
+
+    const groupSelect = document.createElement("select");
+    groupSelect.setAttribute("aria-label", "مجموعة الطالب");
+    for (let n = 1; n <= 6; n++) {
+      const option = document.createElement("option");
+      option.value = String(n);
+      option.textContent = "المجموعة " + n;
+      option.selected = n === Number(student.group_no);
+      groupSelect.appendChild(option);
+    }
+    card.appendChild(groupSelect);
+
+    const save = document.createElement("button");
+    save.textContent = "حفظ التعديلات";
+    save.addEventListener("click", async () => {
+      const newName = nameInput.value.trim();
+      const newGroup = Number(groupSelect.value);
+
+      if (newName.length < 5 || newName.length > 90) {
+        status("يجب أن يكون الاسم بين 5 و90 حرفاً.");
+        return;
+      }
+
+      if (!confirm("هل تريد حفظ التعديلات على هذا الطالب؟")) return;
+
+      save.disabled = true;
+      try {
+        await api("/rest/v1/student_members?id=eq." +
+          encodeURIComponent(student.id), {
+          method: "PATCH",
+          headers: { "Prefer": "return=minimal" },
+          body: JSON.stringify({
+            student_name: newName,
+            group_no: newGroup
+          })
+        });
+        status("تم حفظ التعديلات.");
+        await loadStudents();
+      } catch (error) {
+        status("لم يتم الحفظ: " + error.message);
+      } finally {
+        save.disabled = false;
+      }
+    });
+    card.appendChild(save);
+
+    const del = document.createElement("button");
+    del.textContent = "حذف الطالب";
+    del.className = "danger";
+    del.addEventListener("click", async () => {
+      if (!confirm("هل أنت متأكد من حذف الطالب: " +
+                   student.student_name + "؟")) return;
+
+      del.disabled = true;
+      try {
+        await api("/rest/v1/student_members?id=eq." +
+          encodeURIComponent(student.id), {
+          method: "DELETE",
+          headers: { "Prefer": "return=minimal" }
+        });
+        status("تم إرسال طلب الحذف.");
+        await loadStudents();
+      } catch (error) {
+        status("لم يتم الحذف: " + error.message);
+      } finally {
+        del.disabled = false;
+      }
+    });
+    card.appendChild(del);
+    list.appendChild(card);
+  }
+}
+
+$("refreshBtn").addEventListener("click", loadStudents);
+$("filterGroup").addEventListener("change", renderStudents);
+
+$("logoutBtn").addEventListener("click", () => {
+  accessToken = null;
+  studentRows = [];
+  $("students").replaceChildren();
+  $("dashboard").classList.add("hidden");
+  $("login").classList.remove("hidden");
+  $("password").value = "";
+  status("تم تسجيل الخروج.");
+});
+</script>
+</body>
+  </html>
+
