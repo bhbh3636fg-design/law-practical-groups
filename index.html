@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بوابة مجموعات التطبيق العملي</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;color:#19304f;font-family:Arial,sans-serif;padding:18px}
+header{background:#19304f;color:white;text-align:center;padding:28px 14px;border-radius:18px;border-bottom:6px solid #c8ad70}
+header .symbol{font-size:32px;color:#d6bd7c}
+h1{font-size:25px;line-height:1.6}
+p{line-height:1.9}
+.notice{background:#fff7e5;border:1px solid #e7d5a8;border-radius:12px;padding:15px;margin:18px 0}
+.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.group{background:white;border:1px solid #dce1e8;border-radius:15px;padding:18px 10px;text-align:center}
+.group h2{font-size:19px;margin:5px}
+.count{color:#687587;font-size:14px}
+button{border:0;background:#193f68;color:white;border-radius:9px;padding:11px 15px;font-size:16px;cursor:pointer}
+input{width:100%;padding:13px;border:1px solid #ccd3dd;border-radius:9px;font-size:16px;margin:8px 0 14px}
+.panel{background:white;border-radius:15px;padding:18px;margin-top:18px;border:1px solid #dce1e8}
+#status{font-weight:bold;color:#8a6323}
+footer{text-align:center;color:#687587;padding:22px;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<div class="symbol">⚖</div>
+<h1>بوابة تنظيم مجموعات التطبيق العملي</h1>
+<p>كلية القانون — التسجيل في المجموعات الدراسية</p>
+</header>
+<div class="notice">اختر مجموعة واحدة ثم أدخل اسمك. الحد الأعلى لكل مجموعة هو 8 طلاب. التسجيل النهائي يحتاج إلى اتصال قاعدة البيانات.</div>
+<div class="groups" id="groups"></div>
+<div class="panel">
+<h2 id="chosen">اختر مجموعتك</h2>
+<label for="student">الاسم الثلاثي للطالب</label>
+<input id="student" maxlength="100" placeholder="اكتب اسمك الكامل">
+<button id="join">تسجيل طلب الانضمام</button>
+<p id="status">لم يتم التسجيل بعد.</p>
+</div>
+<footer>بوابة تنظيم مجموعات التطبيق العملي — كلية القانون</footer>
+<script>
+let selected=0;
+const groups=document.getElementById('groups');
+for(let i=1;i<=6;i++){
+ const card=document.createElement('div');
+ card.className='group';
+ card.innerHTML='<h2>المجموعة '+i+'</h2><p class="count">الحد الأعلى: 8 طلاب</p>';
+ const b=document.createElement('button');
+ b.textContent='اختيار المجموعة';
+ b.onclick=()=>{
+  selected=i;
+  document.getElementById('chosen').textContent='المجموعة '+i;
+  document.getElementById('status').textContent='اخترت المجموعة '+i+'.';
+ };
+ card.appendChild(b);groups.appendChild(card);
+}
+document.getElementById('join').onclick=()=>{
+ if(!selected){document.getElementById('status').textContent='يرجى اختيار مجموعة أولاً.';return}
+ if(!document.getElementById('student').value.trim()){document.getElementById('status').textContent='يرجى كتابة اسمك.';return}
+ document.getElementById('status').textContent='الواجهة جاهزة، لكن التسجيل غير محفوظ بعد. يجب ربط قاعدة البيانات قبل فتح التسجيل للطلاب.';
+};
+</script>
+</body>
+  </html>
+  
