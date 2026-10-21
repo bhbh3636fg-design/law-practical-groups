@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123a67">
   <title>بوابة مجموعات التطبيق العملي</title>
 
   <style>
@@ -13,8 +14,8 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f6fb;
+      font-family: Arial, Tahoma, sans-serif;
+      background: #f2f5fa;
       color: #19304f;
       line-height: 1.8;
     }
@@ -23,11 +24,11 @@
       background: linear-gradient(135deg, #123a67, #2476b9);
       color: white;
       text-align: center;
-      padding: 35px 16px;
+      padding: 36px 16px;
     }
 
     header h1 {
-      margin: 0 0 10px;
+      margin: 0 0 8px;
       font-size: 27px;
     }
 
@@ -38,22 +39,22 @@
 
     main {
       width: 100%;
-      max-width: 900px;
+      max-width: 950px;
       margin: 25px auto;
       padding: 0 15px;
     }
 
-    .intro, .section-card {
+    .card {
       background: white;
       padding: 22px;
       border-radius: 16px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 15px #19304f12;
+      box-shadow: 0 4px 16px #19304f12;
     }
 
     h2 {
-      color: #174d80;
       margin-top: 0;
+      color: #174d80;
       font-size: 21px;
     }
 
@@ -61,52 +62,70 @@
       background: #eaf4ff;
       border-right: 4px solid #2476b9;
       border-radius: 8px;
-      padding: 12px;
+      padding: 12px 14px;
       margin-top: 15px;
     }
 
-    .groups {
+    .group-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
 
     .group {
-      background: #f6f9fd;
+      background: #f7faff;
       border: 1px solid #dce7f4;
-      border-radius: 12px;
+      border-radius: 13px;
+      padding: 17px 8px;
       text-align: center;
-      padding: 17px 5px;
     }
 
-    .group strong {
-      display: block;
-      color: #174d80;
+    .group h3 {
+      margin: 0 0 5px;
       font-size: 18px;
+      color: #174d80;
     }
 
-    .group span {
+    .capacity {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #e2f5e9;
+      color: #17683a;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .group p {
       font-size: 13px;
       color: #63748b;
+      margin: 5px 0 0;
     }
 
     footer {
       text-align: center;
-      color: #6b7b90;
-      font-size: 13px;
-      padding: 20px 12px 30px;
+      padding: 22px 12px 30px;
+      color: #63748b;
+      font-size: 14px;
     }
 
-    @media (max-width: 480px) {
+    footer p {
+      margin: 5px 0 0;
+      color: #174d80;
+      font-weight: bold;
+    }
+
+    @media (max-width: 550px) {
       header h1 {
         font-size: 23px;
       }
 
-      .groups {
+      .group-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .intro, .section-card {
+      .card {
         padding: 17px;
       }
     }
@@ -120,67 +139,73 @@
   </header>
 
   <main>
-    <section class="intro">
+    <section class="card">
       <h2>مرحباً بكم في البوابة</h2>
 
       <p>
-        أُنشئت هذه البوابة لتسهيل تنظيم مجموعات التطبيق العملي،
-        وتوفير واجهة واضحة للطلبة للاطلاع على معلومات المجموعات
-        والتعليمات المتعلقة بالتطبيق العملي.
+        تهدف هذه البوابة إلى تنظيم مجموعات التطبيق العملي
+        وتسهيل متابعة معلومات الشعب والمجموعات للطلبة.
       </p>
 
       <div class="notice">
-        <strong>تنويه مهم:</strong>
-        يرجى التأكد من المجموعة المسجل فيها الطالب
-        ومتابعة التعليمات الرسمية الخاصة بالتطبيق العملي.
+        <strong>تنويه:</strong>
+        العدد المحدد لكل مجموعة هو 9 طلاب.
+        يرجى الالتزام بالتعليمات ومراجعة المجموعة المعتمدة.
       </div>
     </section>
 
-    <section class="section-card">
+    <section class="card">
       <h2>الشعبة (أ)</h2>
 
-      <div class="groups">
-        <div class="group">
-          <strong>المجموعة 1</strong>
-          <span>التطبيق العملي</span>
-        </div>
+      <div class="group-grid">
+        <article class="group">
+          <h3>المجموعة 1</h3>
+          <span class="capacity">السعة: 9 طلاب</span>
+          <p>التطبيق العملي</p>
+        </article>
 
-        <div class="group">
-          <strong>المجموعة 2</strong>
-          <span>التطبيق العملي</span>
-        </div>
+        <article class="group">
+          <h3>المجموعة 2</h3>
+          <span class="capacity">السعة: 9 طلاب</span>
+          <p>التطبيق العملي</p>
+        </article>
 
-        <div class="group">
-          <strong>المجموعة 3</strong>
-          <span>التطبيق العملي</span>
-        </div>
+        <article class="group">
+          <h3>المجموعة 3</h3>
+          <span class="capacity">السعة: 9 طلاب</span>
+          <p>التطبيق العملي</p>
+        </article>
       </div>
     </section>
 
-    <section class="section-card">
+    <section class="card">
       <h2>الشعبة (ب)</h2>
 
-      <div class="groups">
-        <div class="group">
-          <strong>المجموعة 4</strong>
-          <span>التطبيق العملي</span>
-        </div>
+      <div class="group-grid">
+        <article class="group">
+          <h3>المجموعة 4</h3>
+          <span class="capacity">السعة: 9 طلاب</span>
+          <p>التطبيق العملي</p>
+        </article>
 
-        <div class="group">
-          <strong>المجموعة 5</strong>
-          <span>التطبيق العملي</span>
-        </div>
+        <article class="group">
+          <h3>المجموعة 5</h3>
+          <span class="capacity">السعة: 9 طلاب</span>
+          <p>التطبيق العملي</p>
+        </article>
 
-        <div class="group">
-          <strong>المجموعة 6</strong>
-          <span>التطبيق العملي</span>
-        </div>
+        <article class="group">
+          <h3>المجموعة 6</h3>
+          <span class="capacity">السعة: 9 طلاب</span>
+          <p>التطبيق العملي</p>
+        </article>
       </div>
     </section>
   </main>
 
   <footer>
     بوابة مجموعات التطبيق العملي
+    <p>إعداد الطالب: منتظر توفيق</p>
   </footer>
 </body>
 </html>
