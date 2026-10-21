@@ -2,200 +2,185 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>بوابة مجموعات التطبيق العملي</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#f4f6fa;color:#19304f;font-family:Arial,sans-serif;padding:18px}
-header{background:#19304f;color:white;text-align:center;padding:24px 14px;border-radius:18px;border-bottom:6px solid #c8ad70}
-.symbol{font-size:32px;color:#d6bd7c}
-h1{font-size:25px;line-height:1.6}
-p{line-height:1.9}
-.notice{background:#fff7e5;border:1px solid #e7d5a8;border-radius:12px;padding:15px;margin:18px 0}
-.student-credit{background:white;border:1px solid #dce1e8;border-radius:12px;padding:14px;margin:15px 0;text-align:center}
-.student-credit p{margin:0 0 6px;color:#8a6d32}
-.student-credit strong{font-size:18px}
-.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.group{background:white;border:1px solid #dce1e8;border-radius:15px;padding:16px 10px;text-align:center;overflow-wrap:anywhere}
-.group h2{font-size:19px;margin:5px}
-.count{color:#687587;font-size:14px}
-ul{padding-right:20px;text-align:right}
-li{margin:8px 0}
-button{border:0;background:#193f68;color:white;border-radius:9px;padding:11px 15px;font-size:16px;cursor:pointer}
-button:disabled{opacity:.5}
-input{width:100%;padding:13px;border:1px solid #ccd3dd;border-radius:9px;font-size:16px;margin:8px 0 14px}
-.panel{background:white;border-radius:15px;padding:18px;margin-top:18px;border:1px solid #dce1e8}
-#status{font-weight:bold;color:#8a6323;overflow-wrap:anywhere}
-footer{text-align:center;color:#687587;padding:22px;font-size:13px}
-@media(max-width:360px){body{padding:10px}.groups{gap:8px}.group{padding:12px 5px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>بوابة مجموعات التطبيق العملي</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #19304f;
+      line-height: 1.8;
+    }
+
+    header {
+      background: linear-gradient(135deg, #123a67, #2476b9);
+      color: white;
+      text-align: center;
+      padding: 35px 16px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 27px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 900px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .intro, .section-card {
+      background: white;
+      padding: 22px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px #19304f12;
+    }
+
+    h2 {
+      color: #174d80;
+      margin-top: 0;
+      font-size: 21px;
+    }
+
+    .notice {
+      background: #eaf4ff;
+      border-right: 4px solid #2476b9;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 15px;
+    }
+
+    .groups {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .group {
+      background: #f6f9fd;
+      border: 1px solid #dce7f4;
+      border-radius: 12px;
+      text-align: center;
+      padding: 17px 5px;
+    }
+
+    .group strong {
+      display: block;
+      color: #174d80;
+      font-size: 18px;
+    }
+
+    .group span {
+      font-size: 13px;
+      color: #63748b;
+    }
+
+    footer {
+      text-align: center;
+      color: #6b7b90;
+      font-size: 13px;
+      padding: 20px 12px 30px;
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 23px;
+      }
+
+      .groups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .intro, .section-card {
+        padding: 17px;
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <header>
+    <h1>بوابة مجموعات التطبيق العملي</h1>
+    <p>بوابتكم لتنظيم المجموعات ومتابعة التعليمات</p>
+  </header>
 
-<header>
-<div class="symbol">⚖</div>
-<h1>بوابة تنظيم مجموعات التطبيق العملي</h1>
-<p>كلية القانون — التسجيل في المجموعات الدراسية</p>
-</header>
+  <main>
+    <section class="intro">
+      <h2>مرحباً بكم في البوابة</h2>
 
-<div class="student-credit">
-<p>إعداد الطالب</p>
-<strong>منتظر توفيق رويعي</strong>
-</div>
+      <p>
+        أُنشئت هذه البوابة لتسهيل تنظيم مجموعات التطبيق العملي،
+        وتوفير واجهة واضحة للطلبة للاطلاع على معلومات المجموعات
+        والتعليمات المتعلقة بالتطبيق العملي.
+      </p>
 
-<div class="notice">
-اختار مجموعتك وسجّل اسمك. الحد الأعلى 8 طلاب لكل مجموعة.
-أسماء الطلاب المسجلين تظهر للجميع.
-</div>
+      <div class="notice">
+        <strong>تنويه مهم:</strong>
+        يرجى التأكد من المجموعة المسجل فيها الطالب
+        ومتابعة التعليمات الرسمية الخاصة بالتطبيق العملي.
+      </div>
+    </section>
 
-<div id="status" role="status" aria-live="polite">جاري تحميل المجموعات...</div>
-<div class="groups" id="groups"></div>
+    <section class="section-card">
+      <h2>الشعبة (أ)</h2>
 
-<div class="panel">
-<h2 id="chosen">اختار مجموعتك</h2>
-<label for="student">الاسم الثلاثي للطالب</label>
-<input id="student" maxlength="90" autocomplete="name" placeholder="اكتب اسمك الكامل">
-<button id="join">تسجيل طلب الانضمام</button>
-</div>
+      <div class="groups">
+        <div class="group">
+          <strong>المجموعة 1</strong>
+          <span>التطبيق العملي</span>
+        </div>
 
-<footer>بوابة تنظيم مجموعات التطبيق العملي — كلية القانون</footer>
+        <div class="group">
+          <strong>المجموعة 2</strong>
+          <span>التطبيق العملي</span>
+        </div>
 
-<script>
-const SUPABASE_URL = 'https://kghozkcccdkdfwbxhnsd.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_6NRWvOPBpLb3TQsyv1YC7g_wMhByzE6';
+        <div class="group">
+          <strong>المجموعة 3</strong>
+          <span>التطبيق العملي</span>
+        </div>
+      </div>
+    </section>
 
-let selected = 0;
-const groupsEl = document.getElementById('groups');
-const statusEl = document.getElementById('status');
-const studentEl = document.getElementById('student');
-const joinBtn = document.getElementById('join');
+    <section class="section-card">
+      <h2>الشعبة (ب)</h2>
 
-function message(text) {
-  statusEl.textContent = text;
-}
+      <div class="groups">
+        <div class="group">
+          <strong>المجموعة 4</strong>
+          <span>التطبيق العملي</span>
+        </div>
 
-async function api(path, options = {}) {
-  const response = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
-    ...options,
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      ...(options.headers || {})
-    }
-  });
+        <div class="group">
+          <strong>المجموعة 5</strong>
+          <span>التطبيق العملي</span>
+        </div>
 
-  const body = await response.text();
-  let data;
-  try { data = body ? JSON.parse(body) : null; }
-  catch { data = body; }
+        <div class="group">
+          <strong>المجموعة 6</strong>
+          <span>التطبيق العملي</span>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  if (!response.ok) {
-    throw new Error(data?.message || data?.hint || data?.details || body || ('HTTP ' + response.status));
-  }
-  return data;
-}
-
-function showGroups(rows) {
-  groupsEl.replaceChildren();
-
-  for (let i = 1; i <= 6; i++) {
-    const members = rows
-      .filter(row => Number(row.group_no) === i)
-      .sort((a, b) => String(a.student_name).localeCompare(String(b.student_name), 'ar'));
-
-    const card = document.createElement('section');
-    card.className = 'group';
-
-    const title = document.createElement('h2');
-    title.textContent = 'المجموعة ' + i;
-
-    const count = document.createElement('p');
-    count.className = 'count';
-    count.textContent = 'عدد الطلاب: ' + members.length + ' / 8';
-
-    const list = document.createElement('ul');
-    if (!members.length) {
-      const li = document.createElement('li');
-      li.textContent = 'لا يوجد طلاب حالياً';
-      list.appendChild(li);
-    } else {
-      members.forEach(member => {
-        const li = document.createElement('li');
-        li.textContent = member.student_name;
-        list.appendChild(li);
-      });
-    }
-
-    const button = document.createElement('button');
-    button.textContent = 'اختيار المجموعة';
-    button.disabled = members.length >= 8;
-    button.onclick = () => {
-      selected = i;
-      document.getElementById('chosen').textContent = 'المجموعة ' + i;
-      message('اخترت المجموعة ' + i + '.');
-    };
-
-    card.append(title, count, list, button);
-    groupsEl.appendChild(card);
-  }
-}
-
-async function loadGroups() {
-  try {
-    const rows = await api('student_members?select=group_no,student_name&order=group_no.asc');
-    showGroups(rows || []);
-    message('تم تحميل أسماء الطلاب.');
-  } catch (error) {
-    message('تعذر تحميل الأسماء: ' + error.message);
-  }
-}
-
-joinBtn.onclick = async () => {
-  if (!selected) {
-    message('يرجى اختيار مجموعة أولاً.');
-    return;
-  }
-
-  const name = studentEl.value.trim().replace(/\s+/g, ' ');
-  if (name.length < 5 || name.length > 90) {
-    message('اكتب اسمك الكامل، من 5 إلى 90 حرفاً.');
-    return;
-  }
-
-  joinBtn.disabled = true;
-  message('جاري التسجيل...');
-
-  try {
-    const result = await api('rpc/join_law_group', {
-      method: 'POST',
-      body: JSON.stringify({
-        p_group_no: selected,
-        p_student_name: name
-      })
-    });
-
-    if (result === 'OK') {
-      message('تم التسجيل بنجاح!');
-      studentEl.value = '';
-      await loadGroups();
-    } else if (result === 'FULL') {
-      message('عذراً، المجموعة ممتلئة.');
-      await loadGroups();
-    } else if (result === 'DUPLICATE') {
-      message('هذا الاسم مسجل مسبقاً في المجموعة المختارة.');
-    } else {
-      message('رد غير متوقع من قاعدة البيانات: ' + String(result));
-    }
-  } catch (error) {
-    message('لم يكتمل التسجيل: ' + error.message);
-  } finally {
-    joinBtn.disabled = false;
-  }
-};
-
-loadGroups();
-</script>
+  <footer>
+    بوابة مجموعات التطبيق العملي
+  </footer>
 </body>
 </html>
