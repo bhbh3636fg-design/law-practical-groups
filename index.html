@@ -8,34 +8,56 @@
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;
-  padding:18px;
+  margin:0;padding:18px;
   font-family:Arial,sans-serif;
-  background:#f3f5f8;
-  color:#19304f
+  background:#f3f5f8;color:#19304f
 }
 header{
-  max-width:900px;
-  margin:10px auto 24px;
-  padding:28px 18px;
-  text-align:center;
-  color:white;
+  max-width:900px;margin:10px auto 24px;
+  padding:26px 16px;text-align:center;color:white;
   background:linear-gradient(135deg,#102744,#214c78);
-  border-radius:18px;
-  border-bottom:5px solid #c7a45c;
-  box-shadow:0 5px 18px #10274420
+  border-radius:18px;border-bottom:5px solid #c7a45c
 }
-header h1{margin:0 0 12px;font-size:27px}
-header p{margin:8px 0;line-height:1.8}
+header h1{margin:0 0 12px;font-size:25px}
+header p{line-height:1.8;margin:7px 0}
 .owner{color:#f0d28b;font-size:17px}
 main{max-width:900px;margin:auto}
-.branch-title{
-  margin:25px 0 12px;
-  padding:12px 15px;
-  background:#e5ebf2;
-  border-right:5px solid #c7a45c;
-  border-radius:8px;
-  font-size:20px
+#chooseBranch{
+  max-width:600px;margin:30px auto;
+  text-align:center;background:white;
+  padding:24px 18px;border-radius:16px;
+  box-shadow:0 4px 18px #0000000d
+}
+#chooseBranch h2{color:#183b66}
+.branch-buttons{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:14px;margin-top:22px
+}
+.branch-button{
+  border:0;border-radius:13px;padding:24px 10px;
+  color:white;font-size:21px;font-weight:bold;
+  cursor:pointer;background:#183b66
+}
+.branch-button.b{background:#98763d}
+.branch-button small{
+  display:block;font-size:13px;font-weight:normal;
+  margin-top:10px;line-height:1.7
+}
+button:focus-visible{
+  outline:3px solid #c7a45c;outline-offset:3px
+}
+#branchView{display:none}
+.branch-heading{
+  display:flex;align-items:center;
+  justify-content:space-between;gap:10px;flex-wrap:wrap;
+  margin:20px 0;padding:14px;
+  background:#e5ebf2;border-right:5px solid #c7a45c;
+  border-radius:9px
+}
+.branch-heading h2{margin:0;font-size:21px}
+.back-button{
+  border:0;border-radius:8px;padding:10px 13px;
+  background:#526174;color:white;cursor:pointer
 }
 .groups{
   display:grid;
@@ -43,62 +65,42 @@ main{max-width:900px;margin:auto}
   gap:14px
 }
 .group{
-  background:white;
-  border:1px solid #e0e5ec;
-  border-radius:14px;
-  padding:19px;
+  background:white;border:1px solid #e0e5ec;
+  border-radius:14px;padding:19px;
   box-shadow:0 3px 12px #00000008
 }
 .group h3{margin:0 0 14px;color:#183b66;font-size:21px}
 .count-line{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  margin-bottom:10px
+  display:flex;justify-content:space-between;
+  align-items:center;gap:8px;margin-bottom:10px
 }
 .count{font-weight:bold;font-size:17px}
 .remaining{font-size:14px;color:#526174}
 .progress{
-  height:10px;
-  background:#e8edf2;
-  border-radius:20px;
-  overflow:hidden;
-  margin:12px 0
+  height:10px;background:#e8edf2;
+  border-radius:20px;overflow:hidden;margin:12px 0
 }
-.bar{
-  width:0%;
-  height:100%;
-  background:#2c8a67;
-  transition:width .3s
-}
+.bar{width:0;height:100%;background:#2c8a67}
 .status{font-size:14px;font-weight:bold;color:#267653}
-.group.full{
-  border-color:#d7a0a0;
-  background:#fffafa
-}
+.group.full{border-color:#d7a0a0;background:#fffafa}
 .group.full .bar{background:#b83232}
 .group.full .status{color:#b83232}
-.note{
-  margin:22px 0;
-  padding:15px;
-  background:white;
-  border-radius:10px;
-  color:#526174;
-  line-height:1.8;
-  font-size:14px
-}
 #loadStatus{
-  text-align:center;
-  padding:12px;
-  color:#526174;
-  line-height:1.8
+  text-align:center;padding:12px;
+  color:#526174;line-height:1.8
+}
+.note{
+  margin:22px 0;padding:15px;background:white;
+  border-radius:10px;color:#526174;
+  line-height:1.8;font-size:14px
 }
 footer{
-  text-align:center;
-  margin:28px auto 10px;
-  color:#657184;
-  font-size:14px
+  text-align:center;margin:28px auto 10px;
+  color:#657184;font-size:14px
+}
+@media(max-width:430px){
+  .branch-button{font-size:18px;padding:20px 7px}
+  header h1{font-size:22px}
 }
 </style>
 </head>
@@ -111,87 +113,43 @@ footer{
 </header>
 
 <main>
-  <div id="loadStatus" role="status">
-    جارٍ تحميل أعداد الطلاب...
-  </div>
+  <section id="chooseBranch">
+    <h2>أهلًا بكم في بوابة مجموعات التطبيق العملي</h2>
+    <p>يرجى اختيار الشعبة الخاصة بك للانتقال إلى مجموعاتها.</p>
 
-  <h2 class="branch-title">الشعبة أ</h2>
-  <div class="groups">
-    <article class="group" data-group="1">
-      <h3>المجموعة الأولى</h3>
-      <div class="count-line">
-        <span>عدد الطلاب</span>
-        <span class="count">جارٍ التحميل</span>
-      </div>
-      <div class="progress"><div class="bar"></div></div>
-      <div class="remaining">السعة الكلية: 9 طلاب</div>
-      <p class="status">جارٍ احتساب المقاعد...</p>
-    </article>
+    <div class="branch-buttons">
+      <button class="branch-button" onclick="openBranch('A')">
+        الشعبة أ
+        <small>المجموعات 1 و2 و3</small>
+      </button>
 
-    <article class="group" data-group="2">
-      <h3>المجموعة الثانية</h3>
-      <div class="count-line">
-        <span>عدد الطلاب</span>
-        <span class="count">جارٍ التحميل</span>
-      </div>
-      <div class="progress"><div class="bar"></div></div>
-      <div class="remaining">السعة الكلية: 9 طلاب</div>
-      <p class="status">جارٍ احتساب المقاعد...</p>
-    </article>
+      <button class="branch-button b" onclick="openBranch('B')">
+        الشعبة ب
+        <small>المجموعات 4 و5 و6</small>
+      </button>
+    </div>
+  </section>
 
-    <article class="group" data-group="3">
-      <h3>المجموعة الثالثة</h3>
-      <div class="count-line">
-        <span>عدد الطلاب</span>
-        <span class="count">جارٍ التحميل</span>
-      </div>
-      <div class="progress"><div class="bar"></div></div>
-      <div class="remaining">السعة الكلية: 9 طلاب</div>
-      <p class="status">جارٍ احتساب المقاعد...</p>
-    </article>
-  </div>
+  <section id="branchView">
+    <div class="branch-heading">
+      <h2 id="branchTitle"></h2>
+      <button class="back-button" onclick="backToBranches()">
+        ↩ تغيير الشعبة
+      </button>
+    </div>
 
-  <h2 class="branch-title">الشعبة ب</h2>
-  <div class="groups">
-    <article class="group" data-group="4">
-      <h3>المجموعة الرابعة</h3>
-      <div class="count-line">
-        <span>عدد الطلاب</span>
-        <span class="count">جارٍ التحميل</span>
-      </div>
-      <div class="progress"><div class="bar"></div></div>
-      <div class="remaining">السعة الكلية: 9 طلاب</div>
-      <p class="status">جارٍ احتساب المقاعد...</p>
-    </article>
+    <div id="loadStatus" role="status">
+      جارٍ تحميل أعداد الطلاب...
+    </div>
 
-    <article class="group" data-group="5">
-      <h3>المجموعة الخامسة</h3>
-      <div class="count-line">
-        <span>عدد الطلاب</span>
-        <span class="count">جارٍ التحميل</span>
-      </div>
-      <div class="progress"><div class="bar"></div></div>
-      <div class="remaining">السعة الكلية: 9 طلاب</div>
-      <p class="status">جارٍ احتساب المقاعد...</p>
-    </article>
+    <div class="groups" id="groupsContainer"></div>
 
-    <article class="group" data-group="6">
-      <h3>المجموعة السادسة</h3>
-      <div class="count-line">
-        <span>عدد الطلاب</span>
-        <span class="count">جارٍ التحميل</span>
-      </div>
-      <div class="progress"><div class="bar"></div></div>
-      <div class="remaining">السعة الكلية: 9 طلاب</div>
-      <p class="status">جارٍ احتساب المقاعد...</p>
-    </article>
-  </div>
-
-  <div class="note">
-    <strong>ملاحظة:</strong>
-    السعة القصوى لكل مجموعة هي 9 طلاب. يتم عرض الأعداد بحسب
-    البيانات المسجلة في قاعدة البيانات.
-  </div>
+    <div class="note">
+      <strong>ملاحظة:</strong>
+      السعة القصوى لكل مجموعة هي 9 طلاب. يتم عرض عدد الطلاب
+      والمقاعد المتبقية حسب البيانات المسجلة في قاعدة البيانات.
+    </div>
+  </section>
 </main>
 
 <footer>بوابة مجموعات التطبيق العملي — كلية القانون</footer>
@@ -205,53 +163,131 @@ const SUPABASE_KEY =
 
 const CAPACITY = 9;
 
-async function loadGroupCounts() {
+let currentBranch = null;
+let requestNumber = 0;
+
+function openBranch(branch) {
+  currentBranch = branch;
+  requestNumber++;
+
+  document.getElementById("chooseBranch").style.display = "none";
+  document.getElementById("branchView").style.display = "block";
+
+  const title = branch === "A" ? "الشعبة أ" : "الشعبة ب";
+  const firstGroup = branch === "A" ? 1 : 4;
+
+  document.getElementById("branchTitle").textContent =
+    "مجموعات " + title;
+
+  const container = document.getElementById("groupsContainer");
+  container.replaceChildren();
+
+  for (let n = firstGroup; n < firstGroup + 3; n++) {
+    const card = document.createElement("article");
+    card.className = "group";
+    card.dataset.group = n;
+
+    const heading = document.createElement("h3");
+    heading.textContent = "المجموعة " + n;
+
+    const line = document.createElement("div");
+    line.className = "count-line";
+
+    const label = document.createElement("span");
+    label.textContent = "عدد الطلاب";
+
+    const count = document.createElement("span");
+    count.className = "count";
+    count.textContent = "جارٍ التحميل";
+
+    line.append(label, count);
+
+    const progress = document.createElement("div");
+    progress.className = "progress";
+
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    progress.appendChild(bar);
+
+    const remaining = document.createElement("div");
+    remaining.className = "remaining";
+    remaining.textContent = "السعة الكلية: 9 طلاب";
+
+    const status = document.createElement("p");
+    status.className = "status";
+    status.textContent = "جارٍ احتساب المقاعد...";
+
+    card.append(heading, line, progress, remaining, status);
+    container.appendChild(card);
+  }
+
+  loadGroupCounts(branch, requestNumber);
+}
+
+function backToBranches() {
+  currentBranch = null;
+  requestNumber++;
+
+  document.getElementById("branchView").style.display = "none";
+  document.getElementById("chooseBranch").style.display = "block";
+}
+
+async function loadGroupCounts(branch, thisRequest) {
   const status = document.getElementById("loadStatus");
+  status.textContent = "جارٍ تحميل أعداد الطلاب...";
 
   try {
-    const response = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/student_members?select=group_no",
-      {
-        headers: {
-          "apikey": SUPABASE_KEY
-        }
+    const first = branch === "A" ? 1 : 4;
+    const last = first + 2;
+
+    const url = SUPABASE_URL +
+      "/rest/v1/student_members?select=group_no" +
+      "&group_no=gte." + first +
+      "&group_no=lte." + last;
+
+    const response = await fetch(url, {
+      headers: {
+        "apikey": SUPABASE_KEY
       }
-    );
+    });
 
     if (!response.ok) {
-      throw new Error("تعذرت قراءة بيانات المجموعات");
+      throw new Error("تعذرت قراءة أعداد الطلاب");
     }
 
     const students = await response.json();
-    const counts = [0, 0, 0, 0, 0, 0];
 
-    for (const student of students) {
-      const groupNo = Number(student.group_no);
-
-      if (groupNo >= 1 && groupNo <= 6) {
-        counts[groupNo - 1]++;
-      }
+    if (thisRequest !== requestNumber || currentBranch !== branch) {
+      return;
     }
 
-    for (let n = 1; n <= 6; n++) {
+    const counts = {};
+    for (let n = first; n <= last; n++) counts[n] = 0;
+
+    for (const student of students) {
+      const n = Number(student.group_no);
+      if (counts[n] !== undefined) counts[n]++;
+    }
+
+    for (let n = first; n <= last; n++) {
       const card = document.querySelector(
         '.group[data-group="' + n + '"]'
       );
 
-      const count = counts[n - 1];
+      if (!card) continue;
+
+      const count = counts[n];
       const remaining = Math.max(0, CAPACITY - count);
       const percent = Math.min(100, count / CAPACITY * 100);
 
       card.querySelector(".count").textContent =
         count + " / " + CAPACITY;
 
-      card.querySelector(".bar").style.width =
-        percent + "%";
+      card.querySelector(".bar").style.width = percent + "%";
 
       card.querySelector(".remaining").textContent =
         count >= CAPACITY
-          ? "السعة الكلية: 9 طلاب"
+          ? "اكتملت السعة: 9 طلاب"
           : "المقاعد المتبقية: " + remaining;
 
       const message = card.querySelector(".status");
@@ -265,18 +301,16 @@ async function loadGroupCounts() {
       }
     }
 
-    status.textContent =
-      "تم تحديث أعداد الطلاب بنجاح.";
+    status.textContent = "تم تحديث أعداد طلاب هذه الشعبة.";
 
   } catch (error) {
+    if (thisRequest !== requestNumber) return;
+
     status.textContent =
-      "لم نتمكن من تحميل الأعداد من قاعدة البيانات. " +
-      "قد تكون قراءة البيانات العامة غير مسموحة حالياً.";
+      "تعذر تحميل الأعداد. تحقق من اتصال قاعدة البيانات.";
     console.error(error);
   }
 }
-
-loadGroupCounts();
 </script>
 </body>
 </html>
