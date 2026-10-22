@@ -25,8 +25,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .branch-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:20px 0;padding:14px;background:#e5ebf2;border-right:5px solid #c7a45c;border-radius:9px}
 .branch-heading h2{margin:0;font-size:21px}
 .back-button{border:0;border-radius:8px;padding:10px 13px;background:#526174;color:white;cursor:pointer}
-.register-button,.submit-button{border:0;border-radius:9px;padding:13px 18px;background:#216c52;color:white;font-weight:bold;cursor:pointer}
-.register-button{width:100%;margin:8px 0 16px}
+.choose-group-button,.submit-button{border:0;border-radius:9px;padding:13px 18px;background:#216c52;color:white;font-weight:bold;cursor:pointer}
+.choose-group-button{width:100%;margin-top:16px}
 .submit-button{width:100%;margin-top:12px}
 button:disabled{opacity:.6;cursor:not-allowed}
 .field{margin:14px 0}
@@ -37,7 +37,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .form-message.error{display:block;background:#fff0f0;color:#a32222}
 .form-message.success{display:block;background:#eaf7ef;color:#17643b}
 .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.group{background:white;border:1px solid #e0e5ec;border-radius:14px;padding:17px;box-shadow:0 3px 12px #00000008;min-width:0}
+.group{background:white;border:1px solid #e0e5ec;border-radius:14px;padding:17px;box-shadow:0 3px 12px #00000008;min-width:0;display:flex;flex-direction:column}
 .group h3{margin:0 0 14px;color:#183b66;font-size:21px}
 .count-line{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
 .count{font-weight:bold;font-size:17px}
@@ -48,12 +48,15 @@ button:disabled{opacity:.6;cursor:not-allowed}
 .group.full{border-color:#d7a0a0;background:#fffafa}
 .group.full .bar{background:#b83232}
 .group.full .status{color:#b83232}
+.group.full .choose-group-button{background:#9aabb9}
 .student-list{padding:0 20px 0 0;margin:15px 0 0;line-height:1.9;overflow-wrap:anywhere}
 .student-list li{padding:3px 0}
 .empty-list{font-size:14px;color:#788394;line-height:1.8;margin-top:14px}
 #loadStatus{text-align:center;padding:12px;color:#526174;line-height:1.8}
 .note{margin:22px 0;padding:15px;background:white;border-radius:10px;color:#526174;line-height:1.8;font-size:14px}
 footer{text-align:center;margin:28px auto 10px;color:#657184;font-size:14px}
+#registrationPanel{display:none}
+#selectedGroupText{padding:12px;background:#eaf0f7;border-radius:8px;font-weight:bold}
 @media(max-width:430px){.branch-button{font-size:18px;padding:20px 7px}header h1{font-size:22px}}
 </style>
 </head>
@@ -87,32 +90,26 @@ footer{text-align:center;margin:28px auto 10px;color:#657184;font-size:14px}
       <button class="back-button" onclick="backToBranches()">↩ تغيير الشعبة</button>
     </div>
 
+    <div id="loadStatus" role="status">جارٍ تحميل بيانات الطلاب...</div>
+    <div class="groups" id="groupsContainer"></div>
+
     <section class="panel" id="registrationPanel">
       <h2>📝 تسجيل طالب جديد</h2>
-      <p>اختر مجموعتك واكتب اسمك الثلاثي كما هو مسجل رسمياً.</p>
-      <button id="showFormButton" class="register-button" onclick="showRegistrationForm()">تسجيل طالب</button>
+      <p id="selectedGroupText"></p>
+      <p>اكتب اسمك الثلاثي كما هو مسجل رسمياً.</p>
 
-      <form id="registrationForm" hidden>
-        <div class="field">
-          <label for="groupSelect">المجموعة</label>
-          <select id="groupSelect" required>
-            <option value="">اختر المجموعة</option>
-          </select>
-        </div>
+      <form id="registrationForm">
         <div class="field">
           <label for="studentName">الاسم الثلاثي</label>
           <input id="studentName" type="text" maxlength="120"
                  placeholder="مثال: أحمد محمد علي" autocomplete="name" required>
         </div>
-        <p class="help">تأكد من صحة اسمك والمجموعة قبل الضغط على تسجيل.</p>
-        <button id="submitButton" class="submit-button" type="submit">تسجيل</button>
-        <button class="back-button" type="button" onclick="hideRegistrationForm()">إلغاء</button>
+        <p class="help">تأكد من صحة اسمك قبل الضغط على تسجيل.</p>
+        <button id="submitButton" class="submit-button" type="submit">تسجيل في هذه المجموعة</button>
+        <button class="back-button" type="button" onclick="cancelRegistration()">إلغاء</button>
         <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
       </form>
     </section>
-
-    <div id="loadStatus" role="status">جارٍ تحميل بيانات الطلاب...</div>
-    <div class="groups" id="groupsContainer"></div>
 
     <div class="note">
       <strong>ملاحظة:</strong>
@@ -130,6 +127,7 @@ const CAPACITY = 9;
 
 let currentBranch = null;
 let requestNumber = 0;
+let selectedGroup = null;
 
 function headers(extra = {}) {
   return {
@@ -146,6 +144,7 @@ function branchRange(branch) {
 
 function openBranch(branch) {
   currentBranch = branch;
+  selectedGroup = null;
   const thisRequest = ++requestNumber;
 
   document.getElementById("chooseBranch").style.display = "none";
@@ -153,18 +152,10 @@ function openBranch(branch) {
   document.getElementById("branchTitle").textContent =
     "مجموعات " + (branch === "A" ? "الشعبة أ" : "الشعبة ب");
 
-  hideRegistrationForm();
-  document.getElementById("formMessage").textContent = "";
-  document.getElementById("formMessage").className = "form-message";
+  document.getElementById("registrationPanel").style.display = "none";
+  resetFormMessage();
 
   const { first, last } = branchRange(branch);
-  const select = document.getElementById("groupSelect");
-  select.replaceChildren(new Option("اختر المجموعة", ""));
-
-  for (let n = first; n <= last; n++) {
-    select.add(new Option("المجموعة " + n, String(n)));
-  }
-
   const container = document.getElementById("groupsContainer");
   container.replaceChildren();
 
@@ -206,7 +197,13 @@ function openBranch(branch) {
     empty.className = "empty-list";
     empty.textContent = "جارٍ تحميل أسماء الطلاب...";
 
-    card.append(heading, line, progress, remaining, status, list, empty);
+    const chooseButton = document.createElement("button");
+    chooseButton.type = "button";
+    chooseButton.className = "choose-group-button";
+    chooseButton.textContent = "اختيار المجموعة";
+    chooseButton.addEventListener("click", () => chooseGroup(n));
+
+    card.append(heading, line, progress, remaining, status, list, empty, chooseButton);
     container.appendChild(card);
   }
 
@@ -215,21 +212,51 @@ function openBranch(branch) {
 
 function backToBranches() {
   currentBranch = null;
+  selectedGroup = null;
   requestNumber++;
   document.getElementById("branchView").style.display = "none";
   document.getElementById("chooseBranch").style.display = "block";
-  hideRegistrationForm();
+  document.getElementById("registrationPanel").style.display = "none";
 }
 
-function showRegistrationForm() {
-  document.getElementById("registrationForm").hidden = false;
-  document.getElementById("showFormButton").hidden = true;
-  document.getElementById("studentName").focus();
+function chooseGroup(groupNo) {
+  const card = document.querySelector('.group[data-group="' + groupNo + '"]');
+  if (!card || card.classList.contains("full")) {
+    showStatusMessage("هذه المجموعة مكتملة. يرجى اختيار مجموعة أخرى.", "error");
+    return;
+  }
+
+  selectedGroup = groupNo;
+  document.getElementById("selectedGroupText").textContent =
+    "المجموعة المختارة: " + groupNo;
+  document.getElementById("registrationPanel").style.display = "block";
+  resetFormMessage();
+
+  document.getElementById("registrationPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+  document.getElementById("studentName").focus({ preventScroll: true });
 }
 
-function hideRegistrationForm() {
-  document.getElementById("registrationForm").hidden = true;
-  document.getElementById("showFormButton").hidden = false;
+function cancelRegistration() {
+  selectedGroup = null;
+  document.getElementById("registrationPanel").style.display = "none";
+  document.getElementById("studentName").value = "";
+  resetFormMessage();
+}
+
+function resetFormMessage() {
+  const box = document.getElementById("formMessage");
+  box.textContent = "";
+  box.className = "form-message";
+}
+
+function showStatusMessage(message, type) {
+  const box = document.getElementById("formMessage");
+  box.textContent = message;
+  box.className = "form-message " + type;
+  document.getElementById("registrationPanel").style.display = "block";
 }
 
 function showFormMessage(message, type) {
@@ -259,7 +286,7 @@ async function loadStudents(branch, thisRequest) {
   try {
     const { first, last } = branchRange(branch);
     const url = SUPABASE_URL +
-      "/rest/v1/student_members?select=group_no,student_name" +
+      "/rest/v1/student_members?select=group_no,student_name,created_at" +
       "&group_no=gte." + first +
       "&group_no=lte." + last +
       "&order=created_at.asc";
@@ -297,12 +324,18 @@ async function loadStudents(branch, thisRequest) {
         count >= CAPACITY ? "اكتملت السعة: 9 طلاب" : "المقاعد المتبقية: " + remaining;
 
       const message = card.querySelector(".status");
+      const chooseButton = card.querySelector(".choose-group-button");
+
       if (count >= CAPACITY) {
         card.classList.add("full");
         message.textContent = "المجموعة مكتملة";
+        chooseButton.disabled = true;
+        chooseButton.textContent = "المجموعة مكتملة";
       } else {
         card.classList.remove("full");
         message.textContent = "توجد مقاعد متاحة";
+        chooseButton.disabled = false;
+        chooseButton.textContent = "اختيار المجموعة";
       }
 
       const list = card.querySelector(".student-list");
@@ -329,14 +362,13 @@ async function loadStudents(branch, thisRequest) {
 document.getElementById("registrationForm").addEventListener("submit", async function(event) {
   event.preventDefault();
 
-  if (!currentBranch) return;
+  if (!currentBranch || selectedGroup === null) return;
 
   const nameInput = document.getElementById("studentName");
-  const groupInput = document.getElementById("groupSelect");
   const button = document.getElementById("submitButton");
 
   const name = nameInput.value.trim().replace(/\s+/g, " ");
-  const groupNo = Number(groupInput.value);
+  const groupNo = selectedGroup;
   const { first, last } = branchRange(currentBranch);
 
   if (name.split(" ").filter(Boolean).length < 3) {
@@ -346,8 +378,13 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
   }
 
   if (!Number.isInteger(groupNo) || groupNo < first || groupNo > last) {
-    showFormMessage("اختر مجموعة من الشعبة التي دخلت إليها.", "error");
-    groupInput.focus();
+    showFormMessage("المجموعة المختارة غير صحيحة.", "error");
+    return;
+  }
+
+  const card = document.querySelector('.group[data-group="' + groupNo + '"]');
+  if (card && card.classList.contains("full")) {
+    showFormMessage("هذه المجموعة مكتملة. اختر مجموعة أخرى.", "error");
     return;
   }
 
@@ -377,7 +414,6 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
     }
 
     nameInput.value = "";
-    groupInput.value = "";
     showFormMessage("تم تسجيلك بنجاح. جارٍ تحديث قائمة المجموعة...", "success");
 
     await loadStudents(currentBranch, requestNumber);
@@ -388,7 +424,7 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
     console.error(error);
   } finally {
     button.disabled = false;
-    button.textContent = "تسجيل";
+    button.textContent = "تسجيل في هذه المجموعة";
   }
 });
 </script>
